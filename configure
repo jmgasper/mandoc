@@ -109,6 +109,7 @@ BIN_FROM_SBIN=
 INCLUDEDIR=
 LIBDIR=
 MANDIR=
+DBDIR=
 READ_ALLOWED_PATH=
 
 WWWPREFIX="/var/www"
@@ -464,6 +465,7 @@ echo "#define MANPATH_DEFAULT \"${MANPATH_DEFAULT}\""
 echo "#define OSENUM ${OSENUM}"
 [ -n "${OSNAME}" ] && echo "#define OSNAME \"${OSNAME}\""
 [ -n "${UTF8_LOCALE}" ] && echo "#define UTF8_LOCALE \"${UTF8_LOCALE}\""
+[ -n "${DBDIR}" ] && echo "#define MANDOC_DB_DIR \"${DBDIR}\""
 [ -n "${READ_ALLOWED_PATH}" ] \
 	&& echo "#define READ_ALLOWED_PATH \"${READ_ALLOWED_PATH}\""
 [ ${HAVE_ATTRIBUTE} -eq 0 ] && echo "#define __attribute__(x)"

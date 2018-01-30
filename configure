@@ -463,6 +463,13 @@ echo
 echo "#define MAN_CONF_FILE \"${SYSCONFDIR}/${MANM_MANCONF}\""
 echo "#define MANPATH_BASE \"${MANPATH_BASE}\""
 echo "#define MANPATH_DEFAULT \"${MANPATH_DEFAULT}\""
+cat << __HEREDOC__
+#ifndef __HAIKU__
+#define MANPATH_BASE "${MANPATH_BASE}"
+#define MANPATH_DEFAULT "${MANPATH_DEFAULT}"
+#endif
+
+__HEREDOC__
 echo "#define OSENUM ${OSENUM}"
 [ -n "${OSNAME}" ] && echo "#define OSNAME \"${OSNAME}\""
 [ -n "${UTF8_LOCALE}" ] && echo "#define UTF8_LOCALE \"${UTF8_LOCALE}\""

@@ -139,6 +139,8 @@ mansearch(const struct mansearch *search,
 
 	chdir_status = 0;
 	for (i = 0; i < paths->sz; i++) {
+		char dbpath[PATH_MAX + NAME_MAX];
+		const size_t dbpathsize = sizeof(dbpath);
 		if (chdir_status && paths->paths[i][0] != '/') {
 			if ( ! getcwd_status) {
 				warnx("%s: getcwd: %s", paths->paths[i], buf);
@@ -148,13 +150,32 @@ mansearch(const struct mansearch *search,
 				continue;
 			}
 		}
+#ifdef MANDOC_DB_DIR
+		if (strlcpy(dbpath, MANDOC_DB_DIR, dbpathsize) >= dbpathsize) {
+			err(1, "%s: strlcpy", MANDOC_DB_DIR);
+			return 0;
+		}
+		if (strlcat(dbpath, paths->paths[i], dbpathsize) >= dbpathsize) {
+			err(1, "%s: strlcat", paths->paths[i]);
+			return 0;
+		}
+		if (strlcat(dbpath, "/" MANDOC_DB, dbpathsize) >= dbpathsize) {
+			err(1, "%s: strlcat", "/" MANDOC_DB);
+			return 0;
+		}
+#else
+		if (strlcpy(dbpath, MANDOC_DB, dbpathsize) >= dbpathsize) {
+			err(1, "%s: strlcpy", MANDOC_DB);
+			return 0;
+		}
+#endif
 		if (chdir(paths->paths[i]) == -1) {
 			warn("%s", paths->paths[i]);
 			continue;
 		}
 		chdir_status = 1;
 
-		if (dbm_open(MANDOC_DB) == -1) {
+		if (dbm_open(dbpath) == -1) {
 			if (errno != ENOENT)
 				warn("%s/%s", paths->paths[i], MANDOC_DB);
 			continue;

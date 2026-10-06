@@ -191,7 +191,7 @@ static	size_t		 basedir_len; /* strlen(basedir) */
 #ifndef MANDOC_DB_DIR
 static	const	char		 dbpath[] = MANDOC_DB;
 #else
-static	char		 dbpath[PATH_MAX + NAME_MAX] = MANDOC_DB_DIR;
+static	char		 dbpath[PATH_MAX + NAME_MAX];
 #endif
 static	struct mpage	*mpage_head; /* list of distinct manual pages */
 static	struct ohash	 mpages; /* table of distinct manual pages */
@@ -2452,6 +2452,11 @@ set_dbpath(void)
 	return 1;
 #else
 	const size_t dbpathsize = sizeof(dbpath);
+	if (strlcpy(dbpath, MANDOC_DB_DIR, dbpathsize) >= dbpathsize) {
+		exitcode = (int)MANDOCLEVEL_SYSERR;
+		say("", "&%s: strlcpy", MANDOC_DB_DIR);
+		return 0;
+	}
 	if (strlcat(dbpath, basedir, dbpathsize) >= dbpathsize) {
 		exitcode = (int)MANDOCLEVEL_SYSERR;
 		say("", "&%s: strlcat", MANDOC_DB_DIR);
